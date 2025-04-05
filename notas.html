@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Venta de Blusas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #000;
+      color: #fff;
+    }
+
+    h1 {
+      color: #00e6e6;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .talla {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #444;
+      border-radius: 8px;
+      background-color: #111;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+
+    .input-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="number"] {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px;
+      background-color: #222;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    .subtotal {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #00ff99;
+    }
+
+    .final {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #111;
+      border: 2px solid #333;
+      border-radius: 10px;
+    }
+
+    .total, .cambio {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .total {
+      color: #ffcc00;
+    }
+
+    .cambio {
+      color: #00ffcc;
+    }
+
+    @media (max-width: 600px) {
+      .input-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Venta de Blusas</h1>
+
+  <div class="talla">
+    <label>Talla M</label>
+    <div class="input-group">
+      Precio: <input type="number" id="precioM" value="60">
+      Cantidad: <input type="number" id="cantidadM" value="0">
+    </div>
+    <div class="subtotal">Subtotal M: $<span id="subtotalM">0.00</span></div>
+  </div>
+
+  <div class="talla">
+    <label>Talla G</label>
+    <div class="input-group">
+      Precio: <input type="number" id="precioG" value="70">
+      Cantidad: <input type="number" id="cantidadG" value="0">
+    </div>
+    <div class="subtotal">Subtotal G: $<span id="subtotalG">0.00</span></div>
+  </div>
+
+  <div class="talla">
+    <label>Talla EX</label>
+    <div class="input-group">
+      Precio: <input type="number" id="precioEX" value="80">
+      Cantidad: <input type="number" id="cantidadEX" value="0">
+    </div>
+    <div class="subtotal">Subtotal EX: $<span id="subtotalEX">0.00</span></div>
+  </div>
+
+  <div class="talla">
+    <label>Talla T42</label>
+    <div class="input-group">
+      Precio: <input type="number" id="precioT42" value="90">
+      Cantidad: <input type="number" id="cantidadT42" value="0">
+    </div>
+    <div class="subtotal">Subtotal T42: $<span id="subtotalT42">0.00</span></div>
+  </div>
+
+  <div class="final">
+    <div class="total">Total Final: $<span id="total">0.00</span></div>
+    <br>
+    <label>Pago del cliente:</label>
+    <input type="number" id="pago" value="0">
+    <div class="cambio">Cambio: $<span id="cambio">0.00</span></div>
+  </div>
+
+  <script>
+    const tallas = ["M", "G", "EX", "T42"];
+
+    function calcularTotal() {
+      let total = 0;
+
+      tallas.forEach(talla => {
+        const precio = parseFloat(document.getElementById(`precio${talla}`).value) || 0;
+        const cantidad = parseInt(document.getElementById(`cantidad${talla}`).value) || 0;
+        const subtotal = precio * cantidad;
+        document.getElementById(`subtotal${talla}`).textContent = subtotal.toFixed(2);
+        total += subtotal;
+      });
+
+      document.getElementById("total").textContent = total.toFixed(2);
+
+      const pago = parseFloat(document.getElementById("pago").value) || 0;
+      const cambio = pago - total;
+      document.getElementById("cambio").textContent = cambio >= 0 ? cambio.toFixed(2) : "0.00";
+    }
+
+    // Agregar listeners a todos los inputs
+    [...tallas.map(t => `precio${t}`), ...tallas.map(t => `cantidad${t}`), "pago"].forEach(id => {
+      document.getElementById(id).addEventListener("input", calcularTotal);
+    });
+
+    // ENTER para moverse automáticamente al siguiente campo
+    const focusOrder = [
+      "cantidadM", "cantidadG", "cantidadEX", "cantidadT42", "pago"
+    ];
+
+    focusOrder.forEach((id, index) => {
+      const element = document.getElementById(id);
+      element.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (index + 1 < focusOrder.length) {
+            document.getElementById(focusOrder[index + 1]).focus();
+          }
+        }
+      });
+    });
+
+    calcularTotal();
+  </script>
+</body>
+</html>
